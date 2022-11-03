@@ -3,34 +3,41 @@ package com.example.branchandatmlocator.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-@Entity(tableName = "branch_atm_info_database")
-data class Locations (
-    @ColumnInfo(name = "Name")
+@JsonClass(generateAdapter = true)
+data class Locations constructor (
+    @Json(name = "Name")
     val name: String,
 
-    @ColumnInfo(name = "Type")
+    @Json(name = "Type")
     val type: String,
 
-    @ColumnInfo(name = "Address")
+    @Json(name = "Address")
     val address: String,
 
-    @ColumnInfo(name = "PhoneNumber")
+    @Json(name = "PhoneNumber")
     val phoneNumber: String,
 
-    @ColumnInfo(name = "FaxNumber")
-    val faxNumber: String,
+    @Json(name = "FaxNumber")
+    val faxNumber: String?,
 
-    @ColumnInfo(name = "xCoordinate")
+    @Json(name = "xCoordinate")
     val xCoordinate: String,
 
-    @ColumnInfo(name = "yCoordinate")
+    @Json(name = "yCoordinate")
     val yCoordinate: String,
 
-    @PrimaryKey
-    @ColumnInfo(name = "BankId")
+    @Json(name = "BankId")
     val bankId: String,
 
-    @ColumnInfo(name = "QRTag")
+    @Json(name = "QRTag")
     val qrTag: String
         )
+
+@JsonClass(generateAdapter = true)
+data class GetLocationByKeyword constructor(
+    @Json(name = "LocationByKeyword")
+    val LocationByKeyword: List<Locations>
+)

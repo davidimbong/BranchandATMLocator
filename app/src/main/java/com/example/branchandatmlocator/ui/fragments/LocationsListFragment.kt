@@ -15,24 +15,24 @@ import com.example.branchandatmlocator.ui.viewmodel.LocatorViewModel
  */
 class LocationsListFragment : Fragment() {
 
-    private var columnCount = 1
-    private val viewModel: LocatorViewModel by activityViewModels {
-        LocatorViewModel.LocatorViewModelFactory(
-            (activity?.application as BaseApplication).database.locatorDao()
-        )
-    }
+//    private var columnCount = 1
+//    private val viewModel: LocatorViewModel by activityViewModels {
+//        LocatorViewModel.LocatorViewModelFactory(
+//            (activity?.application as BaseApplication).database.locatorDao()
+//        )
+//    }
 
     private var _binding: FragmentLocationsListBinding? = null
     private val binding get() = _binding!!
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        arguments?.let {
+//            columnCount = it.getInt(ARG_COLUMN_COUNT)
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -1,11 +1,12 @@
 package com.example.branchandatmlocator.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.branchandatmlocator.R
@@ -20,12 +21,15 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
  * Use the [LocatorFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+const val TAG = "LocatorFragment"
+
 class LocatorFragment : Fragment() {
 
     private lateinit var binding: FragmentLocatorBinding
@@ -62,40 +66,47 @@ class LocatorFragment : Fragment() {
     }
 
     private fun viewList() {
-        lifecycleScope.launch {
-//            println(
-//                LocatorApi.retrofitService.getLocations(
-//                    RequestBody(
-//                        Type = dialog.getSelected(),
-//                        Keyword = svLocator.query.toString()
+        if (isValid()) {
+            lifecycleScope.launch {
+                val keyword = svLocator.query.toString()
+                val locType = dialog.getSelected()
+
+                val call =
+                    LocatorApi.retrofitService.getLocations(
+                        RequestBody(
+                            Type = locType,
+                            Keyword = keyword
+                        )
+                    )
+                Log.d(TAG, call.toString())
+
+                val list: List<Locations> = call.LocationByKeyword
+
+                var x = 0
+                while (x < list.size){
+                    Log.d(TAG, list[x].toString())
+                    x++
+                }
+
+
+//                val call1 =
+//                    LocatorApi.retrofitService.getLocations1(
+//                        RequestBody(
+//                            Type = locType,
+//                            Keyword = keyword
+//                        )
 //                    )
-//                ).toString()
-//            )
-//
-//            LocatorApi.retrofitService.getLocations(
-//                RequestBody(
-//                    Type = dialog.getSelected(),
-//                    Keyword = svLocator.query.toString()
-//                )
-//            )
-            var call: Call<Locations> = LocatorApi.retrofitService.getLocations(RequestBody(Type = "0", Keyword = "GMA"))
-            call.enqueue(object : Callback<Locations>{
-                override fun onResponse(call: Call<Locations>, response: Response<Locations>) {
-                    if (response.code() == 200){
-                        println(call.toString())
-                    }
-                    else {
-                        println("ERROR ERROR ERROR")
-                    }
-                }
+//                Log.d(TAG, call1.toString())
 
-                override fun onFailure(call: Call<Locations>, t: Throwable) {
-                    Toast.makeText(context, "FAILED TO CALL", Toast.LENGTH_SHORT).show()
-                }
-
-            })
+                //findNavController().navigate(R.id.action_locatorFragment_to_locationsListFragment)
+            }
         }
+        else{
+            Toast.makeText(context, "Please input a search query.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
-        findNavController().navigate(R.id.action_locatorFragment_to_locationsListFragment)
+    private fun isValid() : Boolean{
+        return svLocator.query.isNotBlank()
     }
 }
