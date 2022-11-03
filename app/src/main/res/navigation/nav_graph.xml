@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/locatorFragment">
+
+    <fragment
+        android:id="@+id/locatorFragment"
+        android:name="com.example.branchandatmlocator.ui.fragments.LocatorFragment"
+        android:label="locations"
+        >
+        <action
+            android:id="@+id/action_locatorFragment_to_mapLocationsFragment"
+            app:destination="@id/mapLocationsFragment" />
+        <action
+            android:id="@+id/action_locatorFragment_to_locationsListFragment"
+            app:destination="@id/locationsListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mapLocationsFragment"
+        android:name="com.example.branchandatmlocator.ui.fragments.LocationsMapFragment"
+        android:label="locations"
+        >
+        <action
+            android:id="@+id/action_mapLocationsFragment_to_locationsDetailedFragment"
+            app:destination="@id/locationsDetailedFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/locationsListFragment"
+        android:name="com.example.branchandatmlocator.ui.fragments.LocationsListFragment"
+        android:label="locations"
+        >
+        <action
+            android:id="@+id/action_locationsListFragment_to_locationsDetailedFragment"
+            app:destination="@id/locationsDetailedFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/locationsDetailedFragment"
+        android:name="com.example.branchandatmlocator.ui.fragments.LocationsDetailedFragment"
+        android:label="locations"
+        >
+        <action
+            android:id="@+id/action_locationsDetailedFragment_to_mapLocationsFragment"
+            app:destination="@id/mapLocationsFragment" />
+    </fragment>
+
+</navigation>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.LocatorFragment">
+
+    <SearchView
+        android:id="@+id/svLocator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_margin"
+        android:background="@drawable/searchview_background"
+        android:iconifiedByDefault="false"
+        android:queryBackground="@android:color/transparent"
+        android:queryHint="Type here..."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <ImageButton
+        android:id="@+id/btnTypeFilter"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/btnTypeFilter_content_description"
+        android:src="@drawable/ic_filter_list"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/svLocator"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtItemsFound"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/views_margin"
+        android:textColor="#808080"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintEnd_toEndOf="@+id/svLocator"
+        app:layout_constraintStart_toStartOf="@+id/svLocator"
+        app:layout_constraintTop_toBottomOf="@+id/svLocator"
+        app:layout_constraintWidth_percent="0.7" />
+
+    <Button
+        android:id="@+id/btnViewMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/views_margin"
+        android:layout_marginTop="@dimen/views_margin"
+        android:background="@drawable/button_background"
+        android:paddingHorizontal="16dp"
+        android:text="@string/btn_view_map"
+        app:layout_constraintEnd_toStartOf="@+id/btnViewList"
+        app:layout_constraintTop_toBottomOf="@+id/txtItemsFound" />
+
+    <Button
+        android:id="@+id/btnViewList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/views_margin"
+        android:layout_marginTop="@dimen/views_margin"
+        android:background="@drawable/button_background"
+        android:paddingHorizontal="16dp"
+        android:text="@string/btn_view_list"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/txtItemsFound" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".5" />
+</androidx.constraintlayout.widget.ConstraintLayout>
