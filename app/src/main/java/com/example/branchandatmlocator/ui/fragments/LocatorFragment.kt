@@ -4,25 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.branchandatmlocator.R
 import com.example.branchandatmlocator.databinding.FragmentLocatorBinding
+import com.example.branchandatmlocator.ui.ActionBottom
 import com.example.branchandatmlocator.ui.viewmodel.LocatorViewModel
 import kotlinx.android.synthetic.main.fragment_bottom_sheet_dialog_fragment.*
 import kotlinx.android.synthetic.main.fragment_locator.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.util.*
 
 const val TAG = "LocatorFragment"
 
 class LocatorFragment : Fragment() {
 
+    private val dialog = ActionBottom.newInstace()
     private var _binding: FragmentLocatorBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
 //    private val viewModel: LocatorViewModel by activityViewModels {
 //        LocatorViewModelFactory(
@@ -45,19 +44,10 @@ class LocatorFragment : Fragment() {
 
         lateinit var query: String
         binding.btnSearch.setOnClickListener {
+            val locType = dialog.getSelected()
             query = svLocator.query.toString()
-            if (svLocator.query.isNotBlank()) {
-                GlobalScope.launch() {
-                    txtItemsFound.text = viewModel.search(query)
-                }
-                if (viewModel.list.isNotEmpty()) {
-                    binding.btnViewList.isEnabled = true
-                    binding.btnViewMap.isEnabled = true
-                } else {
-                    binding.btnViewList.isEnabled = false
-                    binding.btnViewMap.isEnabled = false
-                }
-            }
+
+            viewModel.search(query, locType, context)
         }
 
         binding.btnViewList.setOnClickListener {
@@ -69,8 +59,22 @@ class LocatorFragment : Fragment() {
         }
 
         binding.btnTypeFilter.setOnClickListener {
-            viewModel.showDialog()
+            dialog.show(parentFragmentManager, ActionBottom.TAG)
         }
+
+        viewModel.resultsFound.observe(viewLifecycleOwner) {
+            txtItemsFound.text = it
+            viewModel.hideLoading()
+        }
+
+        viewModel.buttonSate.observe(viewLifecycleOwner){
+            setEnabledButtons(it)
+        }
+    }
+
+    private fun setEnabledButtons(bool: Boolean) {
+        binding.btnViewList.isEnabled = bool
+        binding.btnViewMap.isEnabled = bool
     }
 
 }

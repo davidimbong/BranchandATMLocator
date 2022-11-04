@@ -1,41 +1,39 @@
 package com.example.branchandatmlocator.ui.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.*
-import com.example.branchandatmlocator.data.LocatorDao
-import com.example.branchandatmlocator.model.Locations
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
+import android.view.Window
+import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.branchandatmlocator.R
 import com.example.branchandatmlocator.model.RequestBody
 import com.example.branchandatmlocator.network.LocatorApi
-import com.example.branchandatmlocator.ui.ActionBottom
 import com.example.branchandatmlocator.ui.fragments.LocatorFragment
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 
 const val TAG = "LocatorViewModel"
-class LocatorViewModel(
-    //private val locatorDao: LocatorDao
-) : ViewModel() {
 
-    private val dialog = ActionBottom.newInstace()
-    private var _list: List<Locations> = listOf()
-    private lateinit var query: String
-    val list get() = _list
+class LocatorViewModel : ViewModel() {
 
-    fun showDialog() {
-        dialog.show(LocatorFragment().parentFragmentManager, ActionBottom.TAG)
+    var dialog: Dialog? = null
+    val resultsFound = MutableLiveData<String>()
+    val buttonSate = MutableLiveData<Boolean>()
+
+    fun search(query: String, locType: String, context: Context?) {
+        if (query.isEmpty()) {
+            Toast.makeText(context, "Please input a query", Toast.LENGTH_SHORT).show()
+        } else {
+            displayLoadingWithText(context)
+            viewModelScope.launch {
+                getResults(query, locType)
+            }
+        }
     }
 
-    suspend fun search(query: String): String {
-        viewModelScope.async {
-            getResults(query)
-        }.await()
-        return "${list.size} results found"
-    }
-
-    private suspend fun getResults(query: String){
-        val locType = dialog.getSelected()
-
+    private suspend fun getResults(query: String, locType: String) {
         val call =
             LocatorApi.retrofitService.getLocations(
                 RequestBody(
@@ -43,9 +41,40 @@ class LocatorViewModel(
                     Keyword = query
                 )
             )
-        _list = call.LocationByKeyword
-        Log.d(TAG, "1st $list")
+        val list = call.LocationByKeyword
+        resultsFound.value = "${list.size} results found"
+        buttonSate.value = list.isNotEmpty()
     }
+
+    fun displayLoadingWithText(context: Context?) {
+        dialog = Dialog(context!!)
+        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog!!.setContentView(R.layout.api_calling_dialog)
+        dialog!!.setCancelable(false)
+        try {
+            dialog!!.show()
+        } catch (e: Exception) {
+        }
+    }
+
+    fun hideLoading() {
+        try {
+            if (dialog != null) {
+                dialog!!.dismiss()
+            }
+        } catch (e: Exception) {
+        }
+    }
+
+
+    private fun checkIfValidQuery() {
+
+    }
+}
+//    private fun setEnabledButtons(bool: Boolean) {
+//        binding.btnViewList.isEnabled = bool
+//        binding.btnViewMap.isEnabled = bool
+//    }
 
 //    class LocatorViewModelFactory(
 //        private val locatorDao: LocatorDao
@@ -68,7 +97,6 @@ class LocatorViewModel(
 //        }
 //    }
 //
-}
 
 //class LocatorViewModelFactory(private val locatorDao: LocatorDao) :
 //    ViewModelProvider.Factory {
