@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -48,14 +47,27 @@
         app:layout_constraintWidth_percent="0.7" />
 
     <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/views_margin"
+        android:background="@drawable/button_background"
+        android:paddingHorizontal="16dp"
+        android:text="@string/btnSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtItemsFound" />
+
+    <Button
         android:id="@+id/btnViewMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/views_margin"
-        android:layout_marginTop="@dimen/views_margin"
         android:background="@drawable/button_background"
+        android:enabled="false"
         android:paddingHorizontal="16dp"
         android:text="@string/btn_view_map"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnViewList"
         app:layout_constraintTop_toBottomOf="@+id/txtItemsFound" />
 
@@ -64,10 +76,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/views_margin"
-        android:layout_marginTop="@dimen/views_margin"
         android:background="@drawable/button_background"
+        android:enabled="false"
         android:paddingHorizontal="16dp"
         android:text="@string/btn_view_list"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/txtItemsFound" />
 

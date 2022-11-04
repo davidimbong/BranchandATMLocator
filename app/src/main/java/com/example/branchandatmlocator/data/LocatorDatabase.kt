@@ -19,7 +19,7 @@ abstract class LocatorDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     LocatorDatabase::class.java,
-                    "branch_atm_info_database"
+                    "locations_database"
                 )
                     .fallbackToDestructiveMigration()
                     .build()
