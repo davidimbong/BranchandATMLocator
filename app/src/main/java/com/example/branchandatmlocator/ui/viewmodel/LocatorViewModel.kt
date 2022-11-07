@@ -1,35 +1,32 @@
 package com.example.branchandatmlocator.ui.viewmodel
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.Context
-import android.view.Window
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.branchandatmlocator.R
 import com.example.branchandatmlocator.model.RequestBody
 import com.example.branchandatmlocator.network.LocatorApi
-import com.example.branchandatmlocator.ui.fragments.LocatorFragment
 import kotlinx.coroutines.launch
 
-const val TAG = "LocatorViewModel"
+//const val TAG = "LocatorViewModel"
+
+enum class DialogState {
+    SHOW, HIDE, ERROR
+}
 
 class LocatorViewModel : ViewModel() {
 
-    var dialog: Dialog? = null
     val resultsFound = MutableLiveData<String>()
     val buttonSate = MutableLiveData<Boolean>()
+    val loadingDialogState = MutableLiveData<DialogState>()
 
-    fun search(query: String, locType: String, context: Context?) {
-        if (query.isEmpty()) {
-            Toast.makeText(context, "Please input a query", Toast.LENGTH_SHORT).show()
-        } else {
-            displayLoadingWithText(context)
+    fun search(query: String, locType: String) {
+        if (query.isNotEmpty()) {
+            loadingDialogState.value = DialogState.SHOW
             viewModelScope.launch {
                 getResults(query, locType)
             }
+        } else {
+            loadingDialogState.value = DialogState.ERROR
         }
     }
 
@@ -44,31 +41,7 @@ class LocatorViewModel : ViewModel() {
         val list = call.LocationByKeyword
         resultsFound.value = "${list.size} results found"
         buttonSate.value = list.isNotEmpty()
-    }
-
-    fun displayLoadingWithText(context: Context?) {
-        dialog = Dialog(context!!)
-        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.setContentView(R.layout.api_calling_dialog)
-        dialog!!.setCancelable(false)
-        try {
-            dialog!!.show()
-        } catch (e: Exception) {
-        }
-    }
-
-    fun hideLoading() {
-        try {
-            if (dialog != null) {
-                dialog!!.dismiss()
-            }
-        } catch (e: Exception) {
-        }
-    }
-
-
-    private fun checkIfValidQuery() {
-
+        loadingDialogState.value = DialogState.HIDE
     }
 }
 //    private fun setEnabledButtons(bool: Boolean) {
