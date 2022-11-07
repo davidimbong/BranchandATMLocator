@@ -31,8 +31,6 @@ class UnsafeOkHttpClient {
                     override fun getAcceptedIssuers(): Array<X509Certificate> {
                         return arrayOf()
                     }
-
-
                 }
             )
 
@@ -61,6 +59,4 @@ class UnsafeOkHttpClient {
             throw RuntimeException(e)
         }
     }
-
-
 }

@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.example.branchandatmlocator.R
+import com.example.branchandatmlocator.ui.viewmodel.LocationsMapViewModel
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -16,20 +19,22 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class LocationsMapFragment : Fragment() {
 
-    private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    private val args: LocationsMapFragmentArgs by navArgs()
+    private var keyword = ""
+    private var locType = ""
+
+    private val viewModel: LocationsMapViewModel by lazy {
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onActivityCreated()"
+        }
+        ViewModelProvider(
+            this,
+            LocationsMapViewModel.Factory(activity.application, keyword, locType)
+        )
+            .get(LocationsMapViewModel::class.java)
     }
+
+    private lateinit var callback: OnMapReadyCallback
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +46,18 @@ class LocationsMapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        keyword = args.keyword
+        locType = args.locType
+
+        callback = OnMapReadyCallback { googleMap ->
+            viewModel.getCoordinates().forEachIndexed { index, it ->
+                val coordinates = LatLng(
+                    it.xCoordinate.toDouble(),
+                    it.yCoordinate.toDouble()
+                )
+                googleMap.addMarker(MarkerOptions().position(coordinates).title(it.name))
+            }
+        }
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }

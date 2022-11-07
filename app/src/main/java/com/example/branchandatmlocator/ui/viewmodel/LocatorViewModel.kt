@@ -3,8 +3,11 @@ package com.example.branchandatmlocator.ui.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.branchandatmlocator.data.getDatabase
+import com.example.branchandatmlocator.model.Locations
 import com.example.branchandatmlocator.model.RequestBody
 import com.example.branchandatmlocator.network.LocatorApi
+import com.example.branchandatmlocator.repository.LocationsRepository
 import kotlinx.coroutines.launch
 
 //const val TAG = "LocatorViewModel"
@@ -18,6 +21,8 @@ class LocatorViewModel : ViewModel() {
     val resultsFound = MutableLiveData<String>()
     val buttonSate = MutableLiveData<Boolean>()
     val loadingDialogState = MutableLiveData<DialogState>()
+    val locationsList = MutableLiveData<List<Locations>>()
+    val queryDetails = MutableLiveData<MutableList<String>>()
 
     fun search(query: String, locType: String) {
         if (query.isNotEmpty()) {
@@ -38,9 +43,9 @@ class LocatorViewModel : ViewModel() {
                     Keyword = query
                 )
             )
-        val list = call.LocationByKeyword
-        resultsFound.value = "${list.size} results found"
-        buttonSate.value = list.isNotEmpty()
+        locationsList.value = call.LocationByKeyword
+        resultsFound.value = "${locationsList.value!!.size} results found"
+        buttonSate.value = locationsList.value!!.isNotEmpty()
         loadingDialogState.value = DialogState.HIDE
     }
 }

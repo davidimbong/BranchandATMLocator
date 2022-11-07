@@ -16,12 +16,11 @@
 package com.example.branchandatmlocator
 
 import android.app.Application
-import com.example.branchandatmlocator.data.LocatorDatabase
 
 /**
  * An application class that inherits from [Application], allows for the creation of a singleton
  * instance of the [ForageDatabase]
  */
 class BaseApplication : Application() {
-    val database: LocatorDatabase by lazy { LocatorDatabase.getDatabase(this) }
+    //val database: Locator by lazy { LocatorDatabase.getDatabase(this) }
 }

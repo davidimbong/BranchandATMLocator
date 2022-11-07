@@ -6,74 +6,45 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.RadioButton
-import android.widget.TextView
-import android.widget.Toast
 import com.example.branchandatmlocator.R
-import com.example.branchandatmlocator.ui.fragments.LocatorFragment
+import com.example.branchandatmlocator.databinding.ApiCallingDialogBinding
+import com.example.branchandatmlocator.databinding.FragmentBottomSheetDialogFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.fragment_bottom_sheet_dialog_fragment.*
-import kotlinx.android.synthetic.main.fragment_locator.*
 
-enum class VALUES{
+enum class VALUES {
     BOTH, BRANCH, ATM
 }
+
 class ActionBottomDialogFragment : BottomSheetDialogFragment() {
 
+    private lateinit var binding: FragmentBottomSheetDialogFragmentBinding
     private var selected = VALUES.BOTH.ordinal.toString()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bottom_sheet_dialog_fragment, container, false)
+        binding = FragmentBottomSheetDialogFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        btnSubmit.setOnClickListener {
-//            if (typeBoth.isSelected) {
-//                selected = getSelected(VALUES.BOTH.toString())
-//            } else if (typeATM.isSelected) {
-//                selected = getSelected(VALUES.ATM.toString())
-//            } else if (typeBranch.isSelected) {
-//                selected = getSelected(VALUES.BRANCH.toString())
-//            }
-//            Toast.makeText(context, selected, Toast.LENGTH_SHORT).show()
-//            this.dismiss()
-//        }
 
-//        btnSubmit.setOnClickListener {
-//            if (typeBoth.isSelected) {
-//                selected = VALUES.BOTH.toString()
-//            } else if (typeATM.isSelected) {
-//                selected = VALUES.ATM.toString()
-//            } else if (typeBranch.isSelected) {
-//                selected = VALUES.BRANCH.toString()
-//            }
-//
-//            this.dismiss()
-//        }
-//
-//        btnCancel.setOnClickListener {
-//            this.dismiss()
-//        }
 
-        typeBoth.setOnClickListener {
+        binding.typeBoth.setOnClickListener {
             selected = VALUES.BOTH.ordinal.toString()
         }
 
-        typeATM.setOnClickListener {
+        binding.typeATM.setOnClickListener {
             selected = VALUES.ATM.ordinal.toString()
         }
 
-        typeBranch.setOnClickListener {
+        binding.typeBranch.setOnClickListener {
             selected = VALUES.BRANCH.ordinal.toString()
         }
     }
 
-    fun getSelected(): String{
+    fun getSelected(): String {
         return selected
     }
 

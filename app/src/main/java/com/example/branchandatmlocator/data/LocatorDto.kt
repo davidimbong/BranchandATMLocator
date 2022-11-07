@@ -1,17 +1,19 @@
-package com.example.branchandatmlocator.model
+package com.example.branchandatmlocator.data
 
 import androidx.room.ColumnInfo
-import androidx.room.Database
-import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.branchandatmlocator.data.LocatorDao
-import com.example.branchandatmlocator.data.LocatorDtoContainer
+import com.example.branchandatmlocator.model.Locations
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-@Entity(tableName = "locations_database")
-data class Locations constructor(
+data class LocatorDtoContainer(val locations: List<LocatorDto>)
+
+/**
+ * Videos represent a devbyte that can be played.
+ */
+@JsonClass(generateAdapter = true)
+data class LocatorDto(
     @Json(name = "Name")
     val name: String,
 
@@ -42,17 +44,11 @@ data class Locations constructor(
 
     @Json(name = "QRTag")
     @ColumnInfo(name = "QR_Tag")
-    val qrTag: String
-)
+    val qrTag: String)
 
-@JsonClass(generateAdapter = true)
-data class GetLocationByKeyword constructor(
-    @Json(name = "LocationByKeyword")
-    val LocationByKeyword: List<Locations>
-)
 
-fun List<Locations>.asDomainModel(): List<Locations> {
-    return map {
+fun LocatorDtoContainer.asDomainModel(): List<Locations> {
+    return locations.map {
         Locations(
             name = it.name,
             type = it.type,
@@ -67,8 +63,8 @@ fun List<Locations>.asDomainModel(): List<Locations> {
     }
 }
 
-fun List<Locations>.asDatabaseModel(): List<Locations> {
-    return map {
+fun LocatorDtoContainer.asDatabaseModel(): List<Locations> {
+    return locations.map {
         Locations(
             name = it.name,
             type = it.type,

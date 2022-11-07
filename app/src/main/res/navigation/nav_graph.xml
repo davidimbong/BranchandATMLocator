@@ -11,7 +11,7 @@
         >
         <action
             android:id="@+id/action_locatorFragment_to_mapLocationsFragment"
-            app:destination="@id/mapLocationsFragment" />
+            app:destination="@id/mapLocationsFragment"/>
         <action
             android:id="@+id/action_locatorFragment_to_locationsListFragment"
             app:destination="@id/locationsListFragment" />
@@ -25,6 +25,12 @@
         <action
             android:id="@+id/action_mapLocationsFragment_to_locationsDetailedFragment"
             app:destination="@id/locationsDetailedFragment" />
+        <argument
+            android:name="keyword"
+            app:argType="string" />
+        <argument
+            android:name="locType"
+            app:argType="string" />
     </fragment>
 
     <fragment

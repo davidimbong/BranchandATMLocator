@@ -20,18 +20,23 @@ import com.example.branchandatmlocator.ui.viewmodel.LocatorViewModel
 
 class LocatorFragment : Fragment() {
 
+    private val viewModel: LocatorViewModel by viewModels()
     private val dialog = ActionBottom.newInstace()
     private var _binding: FragmentLocatorBinding? = null
     private val binding get() = _binding!!
-    private var loadingDialog: Dialog? = null
+    private val loadingDialog: Dialog by lazy {
+        Dialog(requireContext()).apply {
+            this.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            this.setCancelable(false)
+            this.setContentView(R.layout.api_calling_dialog)
+        }
+    }
 
 //    private val viewModel: LocatorViewModel by activityViewModels {
 //        LocatorViewModelFactory(
 //            (activity?.application as BaseApplication).database.locatorDao()
 //        )
 //    }
-
-    private val viewModel: LocatorViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,9 +49,11 @@ class LocatorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        lateinit var locType: String
+        lateinit var query: String
         binding.btnSearch.setOnClickListener {
-            val locType = dialog.getSelected()
-            val query = binding.svLocator.query.toString()
+            locType = dialog.getSelected()
+            query = binding.svLocator.query.toString()
 
             viewModel.search(query, locType)
         }
@@ -56,7 +63,8 @@ class LocatorFragment : Fragment() {
         }
 
         binding.btnViewMap.setOnClickListener {
-            findNavController().navigate(R.id.action_locatorFragment_to_mapLocationsFragment)
+            val directions = LocatorFragmentDirections.actionLocatorFragmentToMapLocationsFragment(query, locType)
+            findNavController().navigate(directions)
         }
 
         binding.btnTypeFilter.setOnClickListener {
@@ -82,18 +90,18 @@ class LocatorFragment : Fragment() {
     }
 
     private fun apiCalling(state: DialogState) {
-        if (state == DialogState.SHOW) {
-            loadingDialog = Dialog(requireContext())
-            loadingDialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            loadingDialog!!.setContentView(R.layout.api_calling_dialog)
-            loadingDialog!!.setCancelable(false)
-            loadingDialog!!.show()
-        } else if (state == DialogState.HIDE) {
-            if (loadingDialog != null) {
-                loadingDialog!!.dismiss()
+        when (state) {
+            DialogState.SHOW -> {
+                loadingDialog.show()
             }
-        } else if (state == DialogState.ERROR) {
-            Toast.makeText(context, "Please input a search query", Toast.LENGTH_SHORT).show()
+
+            DialogState.HIDE -> {
+                loadingDialog.dismiss()
+            }
+
+            DialogState.ERROR -> {
+                Toast.makeText(context, "Please input a search query", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
