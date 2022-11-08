@@ -1,5 +1,6 @@
 package com.example.branchandatmlocator.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.example.branchandatmlocator.data.LocationsDatabase
@@ -21,7 +22,8 @@ class LocationsRepository(private val database: LocationsDatabase) {
 
     val locations: LiveData<List<Locations>> =
         Transformations.map(database.locatorDao.getLocations()) {
-            it.asDomainModel()
+            Log.d("ASDASD", it.toString())
+            it.asDatabaseModel()
         }
 
     suspend fun refreshRepository(keyword: String, type: String) {
@@ -32,8 +34,9 @@ class LocationsRepository(private val database: LocationsDatabase) {
                     Keyword = keyword,
                     Type = type
                 )
-            )
-            database.locatorDao.insertAll(locations.LocationByKeyword.asDatabaseModel())
+            ).LocationByKeyword
+            Log.d("ASD", locations.toString())
+            database.locatorDao.insertAll(locations.asDatabaseModel())
         }
     }
 }

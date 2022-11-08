@@ -1,7 +1,9 @@
 package com.example.branchandatmlocator.ui.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -43,9 +45,11 @@ class LocationsMapViewModel(
 //        return latlngList
 //    }
 
-    fun getCoordinates(): List<Locations> {
-        return locationsRepository.locations.value!!
-    }
+//    fun getCoordinates(): List<Locations> {
+//        //locationsList.observe(viewLifeCycleOwner)
+//        Log.d("ASDASDASD", locationsList.value!!.toString())
+//        return locationsList.value!!
+//    }
 
     class Factory(
         val app: Application,

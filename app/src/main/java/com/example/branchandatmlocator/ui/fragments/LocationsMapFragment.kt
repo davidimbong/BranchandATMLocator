@@ -3,6 +3,7 @@ package com.example.branchandatmlocator.ui.fragments
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,24 +42,42 @@ class LocationsMapFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        keyword = args.keyword
+        locType = args.locType
         return inflater.inflate(R.layout.fragment_map_locations, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        keyword = args.keyword
-        locType = args.locType
-
-        callback = OnMapReadyCallback { googleMap ->
-            viewModel.getCoordinates().forEachIndexed { index, it ->
-                val coordinates = LatLng(
-                    it.xCoordinate.toDouble(),
-                    it.yCoordinate.toDouble()
+        viewModel.locationsList.observe(viewLifecycleOwner) {
+            callback = OnMapReadyCallback { googleMap ->
+                it.forEachIndexed { index, it ->
+                    val coordinates = LatLng(
+                        it.xCoordinate.toDouble(),
+                        it.yCoordinate.toDouble()
+                    )
+                    Log.d("ASD", "$keyword $locType")
+                    googleMap.addMarker(MarkerOptions().position(coordinates).title(it.name))
+                }
+                googleMap.moveCamera(
+                    CameraUpdateFactory.newLatLng(
+                        LatLng(
+                            it[0].xCoordinate.toDouble(),
+                            it[0].yCoordinate.toDouble()
+                        )
+                    )
                 )
-                googleMap.addMarker(MarkerOptions().position(coordinates).title(it.name))
             }
+//            viewModel.getCoordinates().forEachIndexed { index, it ->
+//                val coordinates = LatLng(
+//                    it.xCoordinate.toDouble(),
+//                    it.yCoordinate.toDouble()
+//                )
+//                Log.d("ASD", "$keyword $locType")
+//                googleMap.addMarker(MarkerOptions().position(coordinates).title(it.name))
+//            }
+            val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+            mapFragment?.getMapAsync(callback)
         }
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
     }
 }
