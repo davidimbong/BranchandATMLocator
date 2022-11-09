@@ -2,11 +2,8 @@ package com.example.branchandatmlocator.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -32,11 +29,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
-private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-
 @SuppressLint("MissingPermission")
 class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener, //OnMapReadyCallback,
+    GoogleMap.OnMyLocationClickListener,
     ActivityCompat.OnRequestPermissionsResultCallback {
 
     companion object {
@@ -46,8 +41,6 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
         )
     }
 
-    private lateinit var permissionsRequest: ActivityResultLauncher<Array<String>>
-
     private val viewModel: LocationsMapViewModel by lazy {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
@@ -55,8 +48,7 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
         ViewModelProvider(
             this,
             LocationsMapViewModel.LocationsMapFactory(activity.application)
-        )
-            .get(LocationsMapViewModel::class.java)
+        )[LocationsMapViewModel::class.java]
     }
 
     private lateinit var gMap: GoogleMap
@@ -69,7 +61,7 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        requestPermissions(getPermissionsRequest(), PERMISSIONS)
+        requestPermissions(getPermissionsRequest())
         return inflater.inflate(R.layout.fragment_map_locations, container, false)
     }
 
@@ -115,49 +107,6 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
             }
         }
     }
-//                gMap.moveCamera(
-//                    CameraUpdateFactory.newLatLngZoom(
-//                        LatLng(
-//                            it[0].xCoordinate.toDouble(), it[0].yCoordinate.toDouble()
-//                        ), 20f
-//                    )
-//                )
-
-//                getCurrentLocation()
-//
-//                googleMap.animateCamera(
-//                    CameraUpdateFactory.newLatLng(
-//                        LatLng(
-//                            currentLocation.latitude, currentLocation.longitude
-//                        )
-//                    )
-//                )
-
-//    override fun onMapReady(googleMap: GoogleMap) {
-//        gMap = googleMap
-//        Log.d("ASD", "gMap initialized")
-//        //enableMyLocation()
-//        gMap.setOnMyLocationButtonClickListener(this)
-//        gMap.setOnMyLocationClickListener(this)
-//        gMap.uiSettings.isZoomControlsEnabled = true
-//        gMap.isMyLocationEnabled = true
-//        Log.d("ASD", "Location Enabled")
-//
-//        fusedLocationClient =
-//            LocationServices.getFusedLocationProviderClient(requireContext())
-//        fusedLocationClient.lastLocation.addOnSuccessListener { lastLocation ->
-//            if(lastLocation != null) {
-//                gMap.animateCamera(
-//                    CameraUpdateFactory.newLatLngZoom(
-//                        LatLng(
-//                            lastLocation.latitude, lastLocation.longitude
-//                        ), 16f
-//                    )
-//                )
-//                Log.d("ASD", "Camera zoom to location")
-//            }
-//        }
-//    }
 
     private fun getPermissionsRequest() =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -170,77 +119,6 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
                 Toast.makeText(context, "Please allow location access", Toast.LENGTH_SHORT).show()
             }
         }
-
-//    private fun enableMyLocation() {
-//        if (ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            gMap.isMyLocationEnabled = true
-//            Log.d("ASD", "Location Enabled")
-//            fusedLocationClient =
-//                LocationServices.getFusedLocationProviderClient(requireContext())
-//            fusedLocationClient.lastLocation.addOnSuccessListener { lastLocation ->
-//                gMap.animateCamera(
-//                    CameraUpdateFactory.newLatLngZoom(
-//                        LatLng(
-//                            lastLocation.latitude, lastLocation.longitude
-//                        ), 16f
-//                    )
-//                )
-//                Log.d("ASD", "Move camera")
-//            }
-//            return
-//        }
-//        Log.d("ASD", "Request Permission")
-//        val LOCATION_PERMISSIONS = arrayOf(
-//            Manifest.permission.ACCESS_FINE_LOCATION,
-//            Manifest.permission.ACCESS_COARSE_LOCATION
-//        )
-//
-//        val requestPermissionLauncher =
-//            registerForActivityResult(
-//                ActivityResultContracts.RequestPermission()
-//            ) { isGranted: Boolean ->
-//                if (isGranted) {
-//                    Log.d("ASD", "Permission granted")
-//                    gMap.isMyLocationEnabled = true
-//                    Log.d("ASDASD", "Location Enabled")
-//                    fusedLocationClient =
-//                        LocationServices.getFusedLocationProviderClient(requireContext())
-//                    fusedLocationClient.lastLocation.addOnSuccessListener { lastLocation ->
-//                        gMap.animateCamera(
-//                            CameraUpdateFactory.newLatLngZoom(
-//                                LatLng(
-//                                    lastLocation.latitude, lastLocation.longitude
-//                                ), 16f
-//                            )
-//                        )
-//                        Log.d("ASDASD", "Move camera")
-//                    }
-//                } else {
-//                    Toast.makeText(
-//                        context,
-//                        "Please allow location access to utilize the app properly",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-//    }
-//        ActivityCompat.requestPermissions(
-//            requireActivity(),
-//            arrayOf(
-//                Manifest.permission.ACCESS_FINE_LOCATION,
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ),
-//            LOCATION_PERMISSION_REQUEST_CODE
-//        )
-//}
 
     override fun onMyLocationButtonClick(): Boolean {
         fusedLocationClient.lastLocation.addOnSuccessListener { lastLocation ->
@@ -256,8 +134,6 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
         }
         Toast.makeText(context, "MyLocation button clicked", Toast.LENGTH_SHORT)
             .show()
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
         return false
     }
 
@@ -266,104 +142,11 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
             .show()
     }
 
-//@Suppress("DEPRECATION")
-//override fun onRequestPermissionsResult(
-//    requestCode: Int,
-//    permissions: Array<String>,
-//    grantResults: IntArray
-//) {
-//    if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-//        super.onRequestPermissionsResult(
-//            requestCode,
-//            permissions,
-//            grantResults
-//        )
-//        Log.d("ASD", "not equal to permission request code")
-//        return
-//    }
-//
-//    if (isPermissionGranted(
-//            permissions,
-//            grantResults,
-//            Manifest.permission.ACCESS_FINE_LOCATION
-//        ) || isPermissionGranted(
-//            permissions,
-//            grantResults,
-//            Manifest.permission.ACCESS_COARSE_LOCATION
-//        )
-//    ) {
-//        // Enable the my location layer if the permission has been granted.
-//        Log.d("ASD", "Permission granted")
-//        enableMyLocation()
-//        gMap.isMyLocationEnabled = true
-//        Log.d("ASDASD", "Location Enabled")
-//        fusedLocationClient =
-//            LocationServices.getFusedLocationProviderClient(requireContext())
-//        fusedLocationClient.lastLocation.addOnSuccessListener { lastLocation ->
-//            gMap.animateCamera(
-//                CameraUpdateFactory.newLatLngZoom(
-//                    LatLng(
-//                        lastLocation.latitude, lastLocation.longitude
-//                    ), 16f
-//                )
-//            )
-//            Log.d("ASDASD", "Move camera")
-//        }
-//    } else {
-//        Log.d("ASD", "di ko na alam bat nageerror ")
-//        Toast.makeText(context, "Please allow location access to utilize the app properly", Toast.LENGTH_SHORT).show()
-//    }
-//}
-//
-//private fun isPermissionGranted(
-//    permissions: Array<String>,
-//    grantResults: IntArray,
-//    permission: String
-//): Boolean {
-//    if ((permissions.isNotEmpty() && grantResults.isNotEmpty()) &&
-//        grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-//        permissions[0] == permission
-//    ) {
-//        Log.d("ASD", "$permissions +++++ $grantResults +++++ ${PackageManager.PERMISSION_GRANTED} +++++ $permission ")
-//        Log.d("ASD", "TRUE")
-//        return true
-//    }
-//    Log.d("ASD", "$permissions +++++ $grantResults +++++ ${PackageManager.PERMISSION_GRANTED} +++++ $permission ")
-//    Log.d("ASD", "FALSE")
-//    return false
-//}
+    private fun requestPermissions(
+        request: ActivityResultLauncher<Array<String>>
+    ) = request.launch(PERMISSIONS)
 
-    fun Fragment.requestPermissions(
-        request: ActivityResultLauncher<Array<String>>,
-        permissions: Array<String>
-    ) = request.launch(permissions)
-
-    fun Fragment.isAllPermissionsGranted(permissions: Array<String>) = permissions.all {
+    private fun Fragment.isAllPermissionsGranted(permissions: Array<String>) = permissions.all {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//            if (ContextCompat.checkSelfPermission(
-//                    requireContext(),
-//                    Manifest.permission.ACCESS_FINE_LOCATION
-//                ) == PackageManager.PERMISSION_GRANTED
-//            ) {
-//                locationManager?.requestLocationUpdates(
-//                    LocationManager.GPS_PROVIDER, 0, 0f,
-//                    locationListener!!
-//                )
-//            }
-//            getCurrentLocation()
-//
-//            val mapFragment =
-//                childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-//            mapFragment?.getMapAsync(callback)
-//        }
 }
-
