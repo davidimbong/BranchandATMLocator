@@ -74,81 +74,89 @@ class LocationsMapFragment : Fragment() {
                 }
                 fusedLocationClient
                 googleMap.uiSettings.isZoomControlsEnabled = true
+//                googleMap.animateCamera(
+//                    CameraUpdateFactory.newLatLng(
+//                        LatLng(
+//                            it[0].xCoordinate.toDouble(), it[0].yCoordinate.toDouble()
+//                        )
+//                    )
+//                )
+
+                getCurrentLocation()
+
                 googleMap.animateCamera(
                     CameraUpdateFactory.newLatLng(
                         LatLng(
-                            it[0].xCoordinate.toDouble(), it[0].yCoordinate.toDouble()
+                            currentLocation.latitude, currentLocation.longitude
                         )
                     )
                 )
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15f))
             }
             val mapFragment =
                 childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
             mapFragment?.getMapAsync(callback)
-            //getCurrentLocation()
+        }
+    }
+
+    private fun getCurrentLocation() {
+
+        ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                code
+            )
+            return
+        }
+
+        fusedLocationClient.lastLocation.addOnSuccessListener {
+
+                location ->
+
+            if (location != null) {
+
+                currentLocation = location
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f,
+                    locationListener!!
+                )
+            }
+            getCurrentLocation()
+
+            val mapFragment =
+                childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+            mapFragment?.getMapAsync(callback)
         }
     }
 }
-
-//    @SuppressLint("MissingPermission")
-//    private fun getCurrentLocation() {
-//
-//        ActivityCompat.checkSelfPermission(
-//            requireContext(),
-//            Manifest.permission.ACCESS_FINE_LOCATION
-//        )
-//
-//        if (ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            )
-//            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//
-//            ActivityCompat.requestPermissions(
-//                requireActivity(),
-//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-//                code
-//            )
-//            return
-//        }
-//
-//        fusedLocationClient.lastLocation.addOnSuccessListener {
-//
-//                location ->
-//
-//            if (location != null) {
-//
-//                currentLocation = location
-//            }
-//        }
-//    }
-//
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//            if (ContextCompat.checkSelfPermission(
-//                    requireContext(),
-//                    Manifest.permission.ACCESS_FINE_LOCATION
-//                ) == PackageManager.PERMISSION_GRANTED
-//            ) {
-//                //locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f,
-//                 //   locationListener!!
-//                //)
-//            }
-//            getCurrentLocation()
-//
-//            val mapFragment =
-//                childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-//            mapFragment?.getMapAsync(callback)
-//        }
-//    }
-//}
