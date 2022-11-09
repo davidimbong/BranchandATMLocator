@@ -1,11 +1,8 @@
 package com.example.branchandatmlocator.model
 
 import androidx.room.ColumnInfo
-import androidx.room.Database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.branchandatmlocator.data.LocatorDao
-import com.example.branchandatmlocator.data.LocatorDtoContainer
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -50,22 +47,6 @@ data class GetLocationByKeyword constructor(
     @Json(name = "LocationByKeyword")
     val LocationByKeyword: List<Locations>
 )
-
-fun List<Locations>.asDomainModel(): List<Locations> {
-    return map {
-        Locations(
-            name = it.name,
-            type = it.type,
-            address = it.address,
-            phoneNumber = it.phoneNumber,
-            faxNumber = it.faxNumber,
-            xCoordinate = it.xCoordinate,
-            yCoordinate = it.yCoordinate,
-            bankId = it.bankId,
-            qrTag = it.qrTag
-        )
-    }
-}
 
 fun List<Locations>.asDatabaseModel(): List<Locations> {
     return map {

@@ -32,8 +32,6 @@ interface LocatorApiService {
     @POST("BranchAndAtmLocator/GetLocationByKeyword")
     suspend fun getLocations(@Body requestBody: RequestBody): GetLocationByKeyword
 
-    @POST("BranchAndAtmLocator/GetLocationByKeyword")
-    suspend fun getLocations1(@Body requestBody: RequestBody): JsonObject
 }
 
 object LocatorApi {

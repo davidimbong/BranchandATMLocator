@@ -1,5 +1,6 @@
 package com.example.branchandatmlocator.network
 
+import android.annotation.SuppressLint
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.security.SecureRandom
@@ -12,8 +13,10 @@ class UnsafeOkHttpClient {
     fun getUnsafeOkHttpClient(): OkHttpClient {
         try {
             // Create a trust manager that does not validate certificate chains
-            val trustAllCerts: Array<TrustManager> = arrayOf<TrustManager>(
+            val trustAllCerts: Array<TrustManager> = arrayOf(
+                @SuppressLint("CustomX509TrustManager")
                 object : X509TrustManager {
+                    @SuppressLint("TrustAllX509TrustManager")
                     @Throws(CertificateException::class)
                     override fun checkClientTrusted(
                         chain: Array<X509Certificate?>?,
@@ -21,6 +24,7 @@ class UnsafeOkHttpClient {
                     ) {
                     }
 
+                    @SuppressLint("TrustAllX509TrustManager")
                     @Throws(CertificateException::class)
                     override fun checkServerTrusted(
                         chain: Array<X509Certificate?>?,
@@ -47,11 +51,7 @@ class UnsafeOkHttpClient {
                 sslSocketFactory,
                 trustAllCerts[0] as X509TrustManager
             )
-            builder.hostnameVerifier(object : HostnameVerifier {
-                override fun verify(hostname: String?, session: SSLSession?): Boolean {
-                    return true
-                }
-            })
+            builder.hostnameVerifier { hostname, session -> true }
 
             return builder.build()
 

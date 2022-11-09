@@ -1,9 +1,7 @@
 package com.example.branchandatmlocator.ui.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
-import com.example.branchandatmlocator.data.LocatorDao
 import com.example.branchandatmlocator.data.getDatabase
 import com.example.branchandatmlocator.model.Locations
 import com.example.branchandatmlocator.model.RequestBody
@@ -22,13 +20,11 @@ class LocatorViewModel(
 ) : AndroidViewModel(application) {
 
     private val locationsRepository = LocationsRepository(getDatabase(application))
-    val locationsList = locationsRepository.locations
 
     val resultsFound = MutableLiveData<String>()
     val buttonSate = MutableLiveData<Boolean>()
     val loadingDialogState = MutableLiveData<DialogState>()
     private lateinit var queryList: List<Locations>
-//    val queryDetails = MutableLiveData<MutableList<String>>()
 
     fun refreshDataFromRepository() {
         viewModelScope.launch {

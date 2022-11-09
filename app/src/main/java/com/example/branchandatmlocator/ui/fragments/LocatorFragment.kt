@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.branchandatmlocator.R
 import com.example.branchandatmlocator.databinding.FragmentLocatorBinding
 import com.example.branchandatmlocator.ui.ActionBottom
 import com.example.branchandatmlocator.ui.viewmodel.DialogState
-import com.example.branchandatmlocator.ui.viewmodel.LocationsMapViewModel
 import com.example.branchandatmlocator.ui.viewmodel.LocatorViewModel
 
 //const val TAG = "LocatorFragment"
