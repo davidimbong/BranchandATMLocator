@@ -9,18 +9,30 @@ import android.view.Window
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.branchandatmlocator.R
 import com.example.branchandatmlocator.databinding.FragmentLocatorBinding
 import com.example.branchandatmlocator.ui.ActionBottom
 import com.example.branchandatmlocator.ui.viewmodel.DialogState
+import com.example.branchandatmlocator.ui.viewmodel.LocationsMapViewModel
 import com.example.branchandatmlocator.ui.viewmodel.LocatorViewModel
 
 //const val TAG = "LocatorFragment"
 
 class LocatorFragment : Fragment() {
 
-    private val viewModel: LocatorViewModel by viewModels()
+    private val viewModel: LocatorViewModel by lazy {
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onActivityCreated()"
+        }
+        ViewModelProvider(
+            this,
+            LocatorViewModel.LocatorFactory(activity.application)
+        )
+            .get(LocatorViewModel::class.java)
+    }
+
     private val dialog = ActionBottom.newInstace()
     private var _binding: FragmentLocatorBinding? = null
     private val binding get() = _binding!!
@@ -59,12 +71,11 @@ class LocatorFragment : Fragment() {
         }
 
         binding.btnViewList.setOnClickListener {
-            findNavController().navigate(R.id.action_locatorFragment_to_locationsListFragment)
+            goToNextScreen(R.id.action_locatorFragment_to_locationsListFragment, query, locType)
         }
 
         binding.btnViewMap.setOnClickListener {
-            val directions = LocatorFragmentDirections.actionLocatorFragmentToMapLocationsFragment(query, locType)
-            findNavController().navigate(directions)
+            goToNextScreen(R.id.action_locatorFragment_to_mapLocationsFragment, query, locType)
         }
 
         binding.btnTypeFilter.setOnClickListener {
@@ -103,5 +114,11 @@ class LocatorFragment : Fragment() {
                 Toast.makeText(context, "Please input a search query", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun goToNextScreen(location: Int, keyword: String, loctype: String) {
+        viewModel.refreshDataFromRepository()
+        setEnabledButtons(false)
+        findNavController().navigate(location)
     }
 }

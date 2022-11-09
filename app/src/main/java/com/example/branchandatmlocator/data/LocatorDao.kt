@@ -19,6 +19,9 @@ interface LocatorDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(locations: List<Locations>)
+
+    @Query("DELETE from locations_database")
+    fun deleteAll()
 }
 
 @Database(entities = [Locations::class], version = 1)

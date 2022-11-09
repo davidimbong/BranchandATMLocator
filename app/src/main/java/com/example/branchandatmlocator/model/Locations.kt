@@ -12,6 +12,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 @Entity(tableName = "locations_database")
 data class Locations constructor(
+    @PrimaryKey
     @Json(name = "Name")
     val name: String,
 
@@ -35,7 +36,6 @@ data class Locations constructor(
     @Json(name = "yCoordinate")
     val yCoordinate: String,
 
-    @PrimaryKey
     @Json(name = "BankId")
     @ColumnInfo(name = "Bank_ID")
     val bankId: String,

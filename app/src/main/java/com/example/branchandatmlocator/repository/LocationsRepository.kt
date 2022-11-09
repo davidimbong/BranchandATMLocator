@@ -12,31 +12,17 @@ import com.example.branchandatmlocator.network.LocatorApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-//interface LocationsRepository{
-//
-//    suspend fun search(keyword: String, type: String):List<Locations>
-//
-//    suspend fun get(bankID: String): Locations
-//}
 class LocationsRepository(private val database: LocationsDatabase) {
 
     val locations: LiveData<List<Locations>> =
         Transformations.map(database.locatorDao.getLocations()) {
-            Log.d("ASDASD", it.toString())
             it.asDatabaseModel()
         }
 
-    suspend fun refreshRepository(keyword: String, type: String) {
+    suspend fun refreshRepository(list: List<Locations>) {
         withContext(Dispatchers.IO) {
-            val locations = LocatorApi.retrofitService.getLocations(
-                RequestBody
-                    (
-                    Keyword = keyword,
-                    Type = type
-                )
-            ).LocationByKeyword
-            Log.d("ASD", locations.toString())
-            database.locatorDao.insertAll(locations.asDatabaseModel())
+            database.locatorDao.deleteAll()
+            database.locatorDao.insertAll(list.asDatabaseModel())
         }
     }
 }

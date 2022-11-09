@@ -1,36 +1,20 @@
 package com.example.branchandatmlocator.ui.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.branchandatmlocator.data.getDatabase
-import com.example.branchandatmlocator.model.Locations
 import com.example.branchandatmlocator.repository.LocationsRepository
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 class LocationsMapViewModel(
-    application: Application,
-    private val keyword: String,
-    private val type: String
+    application: Application
 ) : AndroidViewModel(application) {
 
     private val locationsRepository = LocationsRepository(getDatabase(application))
     val locationsList = locationsRepository.locations
-
-    init {
-        refreshDataFromRepository()
-    }
-
-    private fun refreshDataFromRepository() {
-        viewModelScope.launch {
-            locationsRepository.refreshRepository(keyword, type)
-        }
-    }
 
 //    fun getCoordinates(): List<LatLng> {
 //        val latlngList: MutableList<LatLng> = mutableListOf<LatLng>()
@@ -51,15 +35,13 @@ class LocationsMapViewModel(
 //        return locationsList.value!!
 //    }
 
-    class Factory(
+    class LocationsMapFactory(
         val app: Application,
-        val keyword: String,
-        val type: String
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LocationsMapViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return LocationsMapViewModel(app, keyword, type) as T
+                return LocationsMapViewModel(app) as T
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
