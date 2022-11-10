@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 @SuppressLint("MissingPermission")
 class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener,
     ActivityCompat.OnRequestPermissionsResultCallback {
 
     companion object {
@@ -53,6 +52,7 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
 
     private lateinit var gMap: GoogleMap
     private lateinit var callback: OnMapReadyCallback
+    private lateinit var lastLocation: Location
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -80,12 +80,13 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
 
             fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(requireContext())
-            fusedLocationClient.lastLocation.addOnSuccessListener { lastLocation ->
-                if (lastLocation != null) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
+                if (loc != null) {
+                    lastLocation = loc
                     gMap.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             LatLng(
-                                lastLocation.latitude, lastLocation.longitude
+                                loc.latitude, loc.longitude
                             ), 16f
                         )
                     )
@@ -121,25 +122,14 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
         }
 
     override fun onMyLocationButtonClick(): Boolean {
-        fusedLocationClient.lastLocation.addOnSuccessListener { lastLocation ->
-            if (lastLocation != null) {
-                gMap.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            lastLocation.latitude, lastLocation.longitude
-                        ), 16f
-                    )
-                )
-            }
-        }
-        Toast.makeText(context, "MyLocation button clicked", Toast.LENGTH_SHORT)
-            .show()
+        gMap.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    lastLocation.latitude, lastLocation.longitude
+                ), 16f
+            )
+        )
         return false
-    }
-
-    override fun onMyLocationClick(location: Location) {
-        Toast.makeText(context, "Current location:\n$location", Toast.LENGTH_LONG)
-            .show()
     }
 
     private fun requestPermissions(
