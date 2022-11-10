@@ -72,7 +72,6 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
             gMap = googleMap
             Log.d("ASD", "gMap initialized")
             gMap.setOnMyLocationButtonClickListener(this)
-            gMap.setOnMyLocationClickListener(this)
             gMap.uiSettings.isZoomControlsEnabled = true
 
             gMap.isMyLocationEnabled = true
