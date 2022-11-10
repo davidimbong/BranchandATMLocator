@@ -1,65 +1,47 @@
 package com.example.branchandatmlocator.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.example.branchandatmlocator.databinding.ListItemLocationsBinding
 import com.example.branchandatmlocator.model.Locations
 
-class LocatorListAdapter(
-    private val clickListener: (Locations) -> Unit
-) {//: ListAdapter<Locations, LocatorListAdapter.LocatorViewHolder>(DiffCallback) {
+class LocatorListAdapter(private val locationsList: List<Locations>,private val clickListener: (Locations) -> Unit) :
+    RecyclerView.Adapter<LocatorListAdapter.LocatorListViewHolder>() {
 
-    /*class LocatorViewHolder(
-        private var binding: ListItemLocationsBinding
-    ): RecyclerView.ViewHolder(binding.root) {
+    class LocatorListViewHolder(private var binding: ListItemLocationsBinding) :
+        ViewHolder(binding.root) {
 
         fun bind(locations: Locations) {
-            binding.location = locations
-            binding.executePendingBindings()
+            Log.d("ASD", "Location in bind: $locations")
+            binding.txtName.text = locations.name
+            binding.txtAddress.text = locations.address
         }
     }
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocatorViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocatorListViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return LocatorViewHolder(
+        return LocatorListViewHolder(
             ListItemLocationsBinding.inflate(layoutInflater, parent, false)
         )
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<Locations>() {
-        override fun areItemsTheSame(oldItem: Locations, newItem: Locations): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Locations, newItem: Locations): Boolean {
-            return oldItem == newItem
-        }
-
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val locations = getItem(position)
+    override fun onBindViewHolder(holder: LocatorListViewHolder, position: Int) {
+        val location = locationsList[position]
+        Log.d("ASD", "position: $position")
+        Log.d("ASD", "Location in onBind: $location")
         holder.itemView.setOnClickListener {
-            clickListener(locations)
+            clickListener(location)
         }
-        holder.bind(locations)
+        holder.bind(location)
     }
 
-    override fun getItemCount(): Int = values.size
-
-    inner class ViewHolder(binding: FragmentLocationsListBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        val idView: TextView = binding.itemNumber
-        val contentView: TextView = binding.content
-
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
-        }
+    override fun getItemCount(): Int {
+        Log.d("ASD", "list size: ${locationsList.size}")
+        return locationsList.size
     }
 
-    override fun onBindViewHolder(holder: LocatorViewHolder, position: Int) {
-        TODO("Not yet implemented")
-    }*/
+
 }

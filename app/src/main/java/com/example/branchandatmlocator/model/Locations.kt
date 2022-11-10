@@ -1,14 +1,17 @@
 package com.example.branchandatmlocator.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 @Entity(tableName = "locations_database")
-data class Locations constructor(
+data class Locations(
     @PrimaryKey
     @Json(name = "Name")
     val name: String,
@@ -40,7 +43,7 @@ data class Locations constructor(
     @Json(name = "QRTag")
     @ColumnInfo(name = "QR_Tag")
     val qrTag: String
-)
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
 data class GetLocationByKeyword constructor(

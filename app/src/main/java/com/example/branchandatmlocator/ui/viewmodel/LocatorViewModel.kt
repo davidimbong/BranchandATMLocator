@@ -24,7 +24,7 @@ class LocatorViewModel(
     val resultsFound = MutableLiveData<String>()
     val buttonSate = MutableLiveData<Boolean>()
     val loadingDialogState = MutableLiveData<DialogState>()
-    private lateinit var queryList: List<Locations>
+    lateinit var queryList: List<Locations>
 
     fun refreshDataFromRepository() {
         viewModelScope.launch {

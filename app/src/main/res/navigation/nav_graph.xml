@@ -32,6 +32,9 @@
         android:name="com.example.branchandatmlocator.ui.fragments.LocationsListFragment"
         android:label="locations"
         >
+        <argument
+            android:name="locationsList"
+            app:argType="com.example.branchandatmlocator.model.Locations[]"/>
         <action
             android:id="@+id/action_locationsListFragment_to_locationsDetailedFragment"
             app:destination="@id/locationsDetailedFragment" />
@@ -45,6 +48,9 @@
         <action
             android:id="@+id/action_locationsDetailedFragment_to_mapLocationsFragment"
             app:destination="@id/mapLocationsFragment" />
+        <argument
+            android:name="bankName"
+            app:argType="string" />
     </fragment>
 
 </navigation>

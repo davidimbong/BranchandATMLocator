@@ -69,11 +69,17 @@ class LocatorFragment : Fragment() {
         }
 
         binding.btnViewList.setOnClickListener {
-            goToNextScreen(R.id.action_locatorFragment_to_locationsListFragment)
+            val action =
+                LocatorFragmentDirections
+                    .actionLocatorFragmentToLocationsListFragment(
+                        viewModel.queryList.toTypedArray()
+                    )
+            findNavController().navigate(action)
         }
 
         binding.btnViewMap.setOnClickListener {
-            goToNextScreen(R.id.action_locatorFragment_to_mapLocationsFragment)
+            viewModel.refreshDataFromRepository()
+            findNavController().navigate(R.id.action_locatorFragment_to_mapLocationsFragment)
         }
 
         binding.btnTypeFilter.setOnClickListener {
@@ -114,8 +120,4 @@ class LocatorFragment : Fragment() {
         }
     }
 
-    private fun goToNextScreen(location: Int) {
-        viewModel.refreshDataFromRepository()
-        findNavController().navigate(location)
-    }
 }
