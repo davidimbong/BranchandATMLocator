@@ -30,7 +30,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 @SuppressLint("MissingPermission")
-class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListener,
+class LocationsMapFragment : Fragment(),
     ActivityCompat.OnRequestPermissionsResultCallback {
 
     companion object {
@@ -50,11 +50,7 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
         )[LocationsMapViewModel::class.java]
     }
 
-    private lateinit var gMap: GoogleMap
     private lateinit var callback: OnMapReadyCallback
-    private lateinit var lastLocation: Location
-
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,20 +64,15 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        callback = OnMapReadyCallback { googleMap ->
-            gMap = googleMap
-            Log.d("ASD", "gMap initialized")
-            gMap.setOnMyLocationButtonClickListener(this)
+        callback = OnMapReadyCallback { gMap ->
             gMap.uiSettings.isZoomControlsEnabled = true
 
             gMap.isMyLocationEnabled = true
-            Log.d("ASD", "Location Enabled")
 
-            fusedLocationClient =
+            val fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(requireContext())
             fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
                 if (loc != null) {
-                    lastLocation = loc
                     gMap.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             LatLng(
@@ -89,14 +80,10 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
                             ), 16f
                         )
                     )
-                    Log.d("ASD", "Camera zoom to location")
                 }
             }
-            Log.d("ASD", "fusedLocationClient finished calling")
 
             viewModel.locationsList.observe(viewLifecycleOwner) {
-                Log.d("ASD", "list observed")
-                //enableMyLocation()
                 it.forEachIndexed { _, locations ->
                     val coordinates = LatLng(
                         locations.xCoordinate.toDouble(),
@@ -114,22 +101,10 @@ class LocationsMapFragment : Fragment(), GoogleMap.OnMyLocationButtonClickListen
                 val mapFragment =
                     childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
                 mapFragment?.getMapAsync(callback)
-                Log.d("ASD", "Map initialized")
             } else {
                 Toast.makeText(context, "Please allow location access", Toast.LENGTH_SHORT).show()
             }
         }
-
-    override fun onMyLocationButtonClick(): Boolean {
-        gMap.animateCamera(
-            CameraUpdateFactory.newLatLngZoom(
-                LatLng(
-                    lastLocation.latitude, lastLocation.longitude
-                ), 16f
-            )
-        )
-        return false
-    }
 
     private fun requestPermissions(
         request: ActivityResultLauncher<Array<String>>
