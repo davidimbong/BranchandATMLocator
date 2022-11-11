@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.branchandatmlocator.data.getDatabase
 import com.example.branchandatmlocator.repository.LocationsRepository
+import kotlinx.coroutines.launch
 
 class LocationsMapViewModel(
     application: Application
@@ -13,6 +15,13 @@ class LocationsMapViewModel(
 
     private val locationsRepository = LocationsRepository(getDatabase(application))
     val locationsList = locationsRepository.locations
+    val location = locationsRepository.location
+
+    fun getList(name: String){
+        viewModelScope.launch {
+            locationsRepository.getLocation(name)
+        }
+    }
 
     class LocationsMapFactory(
         val app: Application,

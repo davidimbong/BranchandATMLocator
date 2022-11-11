@@ -14,8 +14,8 @@ interface LocatorDao {
     @Query("SELECT * from locations_database")
     fun getLocations(): LiveData<List<Locations>>
 
-    @Query("SELECT * from locations_database WHERE Bank_ID = :bankID")
-    fun getLocation(bankID: String): Locations
+    @Query("SELECT * from locations_database WHERE Name = :name")
+    fun getLocation(name: String): Locations
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(locations: List<Locations>)

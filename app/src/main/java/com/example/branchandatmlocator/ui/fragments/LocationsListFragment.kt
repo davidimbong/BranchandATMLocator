@@ -5,10 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.branchandatmlocator.databinding.FragmentLocationsListBinding
 import com.example.branchandatmlocator.ui.adapter.LocatorListAdapter
+import com.example.branchandatmlocator.ui.viewmodel.LocationsDetailedViewModel
 
 /**
  * A fragment representing a list of Items.
@@ -17,6 +19,7 @@ class LocationsListFragment : Fragment() {
 
     private var _binding: FragmentLocationsListBinding? = null
     private val binding get() = _binding!!
+    private val detailedViewModel: LocationsDetailedViewModel by activityViewModels()
 
     private val args by navArgs<LocationsListFragmentArgs>()
 
@@ -33,6 +36,7 @@ class LocationsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = LocatorListAdapter(args.locationsList.toList()) { locations ->
+            detailedViewModel.locationsDetailed = locations
             val action = LocationsListFragmentDirections
                 .actionLocationsListFragmentToLocationsDetailedFragment(
                     locations.name

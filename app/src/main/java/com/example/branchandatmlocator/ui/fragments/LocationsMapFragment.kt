@@ -3,11 +3,7 @@ package com.example.branchandatmlocator.ui.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.location.Location
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,14 +12,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.branchandatmlocator.R
+import com.example.branchandatmlocator.ui.viewmodel.LocationsDetailedViewModel
 import com.example.branchandatmlocator.ui.viewmodel.LocationsMapViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -50,6 +47,7 @@ class LocationsMapFragment : Fragment(),
         )[LocationsMapViewModel::class.java]
     }
 
+    private val detailedViewModel: LocationsDetailedViewModel by activityViewModels()
     private lateinit var callback: OnMapReadyCallback
 
     override fun onCreateView(
@@ -65,10 +63,12 @@ class LocationsMapFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
 
         callback = OnMapReadyCallback { gMap ->
+            gMap.clear()
             gMap.uiSettings.isZoomControlsEnabled = true
 
             gMap.isMyLocationEnabled = true
 
+            //set mapcamera to current location
             val fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(requireContext())
             fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
@@ -83,7 +83,8 @@ class LocationsMapFragment : Fragment(),
                 }
             }
 
-            viewModel.locationsList.observe(viewLifecycleOwner) {
+            //populate map with markers of locations from api call
+            viewModel.locationsList.observe(viewLifecycleOwner) { it ->
                 it.forEachIndexed { _, locations ->
                     val coordinates = LatLng(
                         locations.xCoordinate.toDouble(),
@@ -91,8 +92,24 @@ class LocationsMapFragment : Fragment(),
                     )
                     gMap.addMarker(MarkerOptions().position(coordinates).title(locations.name))
                 }
-            }
-        }
+
+                //set listener for markers to go to detailed screen
+                gMap.setOnMarkerClickListener { marker ->
+                    viewModel.getList(marker.title!!)
+                    viewModel.location.observe(viewLifecycleOwner) { locations ->
+                        detailedViewModel.locationsDetailed = locations
+                        findNavController().navigate(R.id.action_mapLocationsFragment_to_locationsDetailedFragment)
+                    }
+                    true
+                }
+
+                viewModel.location.observe(viewLifecycleOwner) { locations ->
+
+                }
+            } // observe ends
+
+
+        } // callback ends
     }
 
     private fun getPermissionsRequest() =
@@ -113,4 +130,6 @@ class LocationsMapFragment : Fragment(),
     private fun Fragment.isAllPermissionsGranted(permissions: Array<String>) = permissions.all {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
+
+
 }
