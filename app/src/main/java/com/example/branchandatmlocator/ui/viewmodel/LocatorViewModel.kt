@@ -2,24 +2,23 @@ package com.example.branchandatmlocator.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.branchandatmlocator.data.getDatabase
 import com.example.branchandatmlocator.model.Locations
 import com.example.branchandatmlocator.model.RequestBody
 import com.example.branchandatmlocator.network.LocatorApi
 import com.example.branchandatmlocator.repository.LocationsRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-
-//const val TAG = "LocatorViewModel"
+import javax.inject.Inject
 
 enum class DialogState {
     SHOW, HIDE, ERROR
 }
 
-class LocatorViewModel(
+@HiltViewModel
+class LocatorViewModel@Inject constructor(
+    private val locationsRepository: LocationsRepository,
     application: Application
 ) : AndroidViewModel(application) {
-
-    private val locationsRepository = LocationsRepository(getDatabase(application))
 
     val resultsFound = MutableLiveData<String>()
     val buttonSate = MutableLiveData<Boolean>()
@@ -55,16 +54,5 @@ class LocatorViewModel(
         resultsFound.value = "${queryList.size} results found"
         buttonSate.value = queryList.isNotEmpty()
         loadingDialogState.value = DialogState.HIDE
-    }
-    class LocatorFactory(
-        val app: Application,
-    ) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(LocatorViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return LocatorViewModel(app) as T
-            }
-            throw IllegalArgumentException("Unable to construct viewmodel")
-        }
     }
 }

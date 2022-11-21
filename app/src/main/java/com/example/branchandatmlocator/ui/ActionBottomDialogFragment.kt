@@ -18,7 +18,7 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentBottomSheetDialogFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -44,8 +44,4 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment() {
         return selected
     }
 
-//    fun getSelected(type: String): String{
-//        selected = type
-//        return selected
-//    }
 }

@@ -1,15 +1,11 @@
 package com.example.branchandatmlocator.data
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.branchandatmlocator.model.Locations
 
 @Dao
 interface LocatorDao {
-
-//    @Query("SELECT * from branch_atm_info_database WHERE Name = :name")
-//    fun getLocations(name: String): Flow<List<Locations>>
 
     @Query("SELECT * from locations_database")
     fun getLocations(): LiveData<List<Locations>>
@@ -26,37 +22,5 @@ interface LocatorDao {
 
 @Database(entities = [Locations::class], version = 1)
 abstract class LocationsDatabase: RoomDatabase() {
-    abstract val locatorDao: LocatorDao
+    abstract fun locatorDao(): LocatorDao
 }
-
-private lateinit var INSTANCE: LocationsDatabase
-
-fun getDatabase(context: Context): LocationsDatabase {
-    synchronized(LocationsDatabase::class.java) {
-        if (!::INSTANCE.isInitialized) {
-            INSTANCE = Room.databaseBuilder(context.applicationContext,
-                LocationsDatabase::class.java,
-                "locations_database").build()
-        }
-    }
-    return INSTANCE
-}
-//@Database(entities = [Locations::class], version = 1)
-//abstract class LocationsDatabase: RoomDatabase() {
-//    abstract val locatorDao: LocatorDao
-//}
-//
-//private lateinit var INSTANCE: LocationsDatabase
-//
-//fun getDatabase(context: Context): LocationsDatabase {
-//    synchronized(LocationsDatabase::class.java) {
-//        if (!::INSTANCE.isInitialized) {
-//            INSTANCE = Room.databaseBuilder(context.applicationContext,
-//                LocationsDatabase::class.java,
-//                "videos").build()
-//        }
-//    }
-//    return INSTANCE
-//}
-
-

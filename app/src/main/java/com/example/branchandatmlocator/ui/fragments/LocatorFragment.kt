@@ -8,30 +8,21 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.branchandatmlocator.R
 import com.example.branchandatmlocator.databinding.FragmentLocatorBinding
 import com.example.branchandatmlocator.ui.ActionBottom
 import com.example.branchandatmlocator.ui.viewmodel.DialogState
 import com.example.branchandatmlocator.ui.viewmodel.LocatorViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-//const val TAG = "LocatorFragment"
-
+@AndroidEntryPoint
 class LocatorFragment : Fragment() {
 
-    private val viewModel: LocatorViewModel by lazy {
-        val activity = requireNotNull(this.activity) {
-            "You can only access the viewModel after onActivityCreated()"
-        }
-        ViewModelProvider(
-            this,
-            LocatorViewModel.LocatorFactory(activity.application)
-        )
-            .get(LocatorViewModel::class.java)
-    }
+    private val viewModel: LocatorViewModel by viewModels()
 
-    private val dialog = ActionBottom.newInstace()
+    private val dialog = ActionBottom.newInstance()
     private var _binding: FragmentLocatorBinding? = null
     private val binding get() = _binding!!
     private val loadingDialog: Dialog by lazy {
@@ -41,12 +32,6 @@ class LocatorFragment : Fragment() {
             this.setContentView(R.layout.api_calling_dialog)
         }
     }
-
-//    private val viewModel: LocatorViewModel by activityViewModels {
-//        LocatorViewModelFactory(
-//            (activity?.application as BaseApplication).database.locatorDao()
-//        )
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -119,5 +104,4 @@ class LocatorFragment : Fragment() {
             }
         }
     }
-
 }

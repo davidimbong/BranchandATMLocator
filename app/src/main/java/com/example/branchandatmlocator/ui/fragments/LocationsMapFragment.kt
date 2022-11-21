@@ -14,7 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.branchandatmlocator.R
 import com.example.branchandatmlocator.ui.viewmodel.LocationsDetailedViewModel
@@ -25,8 +25,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import dagger.hilt.android.AndroidEntryPoint
 
 @SuppressLint("MissingPermission")
+@AndroidEntryPoint
 class LocationsMapFragment : Fragment(),
     ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -37,16 +39,7 @@ class LocationsMapFragment : Fragment(),
         )
     }
 
-    private val viewModel: LocationsMapViewModel by lazy {
-        val activity = requireNotNull(this.activity) {
-            "You can only access the viewModel after onActivityCreated()"
-        }
-        ViewModelProvider(
-            this,
-            LocationsMapViewModel.LocationsMapFactory(activity.application)
-        )[LocationsMapViewModel::class.java]
-    }
-
+    private val viewModel: LocationsMapViewModel by viewModels()
     private val detailedViewModel: LocationsDetailedViewModel by activityViewModels()
     private lateinit var callback: OnMapReadyCallback
 
