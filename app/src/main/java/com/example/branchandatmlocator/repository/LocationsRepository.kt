@@ -10,27 +10,28 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class LocationsRepository @Inject constructor(
     private val locatorDao: LocatorDao
-    ){
+){
 
-     val locations: LiveData<List<Locations>> =
+    val locations: LiveData<List<Locations>> =
         Transformations.map(locatorDao.getLocations()) {
             it.asDatabaseModel()
         }
 
-     val location = MutableLiveData<Locations>()
+    val location = MutableLiveData<Locations>()
 
-     suspend fun refreshRepository(list: List<Locations>) {
+    suspend fun refreshRepository(list: List<Locations>) {
         withContext(Dispatchers.IO) {
             locatorDao.deleteAll()
             locatorDao.insertAll(list.asDatabaseModel())
         }
     }
 
-     suspend fun getLocation(name: String) {
+    suspend fun getLocation(name: String) {
         withContext(Dispatchers.IO) {
             location.postValue(locatorDao.getLocation(name))
         }

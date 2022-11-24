@@ -22,7 +22,7 @@ class LocatorFragment : Fragment() {
 
     private val viewModel: LocatorViewModel by viewModels()
 
-    private val dialog = ActionBottom.newInstance()
+    private val dialog = ActionBottom.newInstace()
     private var _binding: FragmentLocatorBinding? = null
     private val binding get() = _binding!!
     private val loadingDialog: Dialog by lazy {
@@ -54,12 +54,7 @@ class LocatorFragment : Fragment() {
         }
 
         binding.btnViewList.setOnClickListener {
-            val action =
-                LocatorFragmentDirections
-                    .actionLocatorFragmentToLocationsListFragment(
-                        viewModel.queryList.toTypedArray()
-                    )
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_locatorFragment_to_locationsListFragment)
         }
 
         binding.btnViewMap.setOnClickListener {

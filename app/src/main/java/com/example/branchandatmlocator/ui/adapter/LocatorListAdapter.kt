@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.branchandatmlocator.databinding.ListItemLocationsBinding
 import com.example.branchandatmlocator.model.Locations
 
-class LocatorListAdapter(private val locationsList: List<Locations>,private val clickListener: (Locations) -> Unit) :
+class LocatorListAdapter (
+    private val locationsList: List<Locations>,
+    private val clickListener: (Locations) -> Unit) :
     RecyclerView.Adapter<LocatorListAdapter.LocatorListViewHolder>() {
 
     class LocatorListViewHolder(private var binding: ListItemLocationsBinding) :
@@ -27,11 +29,11 @@ class LocatorListAdapter(private val locationsList: List<Locations>,private val 
     }
 
     override fun onBindViewHolder(holder: LocatorListViewHolder, position: Int) {
-        val location = locationsList[position]
-        holder.itemView.setOnClickListener {
-            clickListener(location)
-        }
-        holder.bind(location)
+            val location = locationsList[position]
+            holder.itemView.setOnClickListener {
+                clickListener(location)
+            }
+            holder.bind(location)
     }
 
     override fun getItemCount(): Int {

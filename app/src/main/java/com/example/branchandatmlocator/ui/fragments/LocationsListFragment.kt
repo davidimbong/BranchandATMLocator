@@ -6,22 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.branchandatmlocator.databinding.FragmentLocationsListBinding
 import com.example.branchandatmlocator.ui.adapter.LocatorListAdapter
 import com.example.branchandatmlocator.ui.viewmodel.LocationsDetailedViewModel
+import com.example.branchandatmlocator.ui.viewmodel.LocationsListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A fragment representing a list of Items.
  */
+@AndroidEntryPoint
 class LocationsListFragment : Fragment() {
 
     private var _binding: FragmentLocationsListBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: LocationsListViewModel by viewModels()
     private val detailedViewModel: LocationsDetailedViewModel by activityViewModels()
 
-    private val args by navArgs<LocationsListFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,17 +38,20 @@ class LocationsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = LocatorListAdapter(args.locationsList.toList()) { locations ->
-            detailedViewModel.locationsDetailed = locations
-            val action = LocationsListFragmentDirections
-                .actionLocationsListFragmentToLocationsDetailedFragment(
-                    locations.name
-                )
-            findNavController().navigate(action)
-        }
+        viewModel.locationsList.observe(viewLifecycleOwner) {
+            val adapter = LocatorListAdapter(it) { locations ->
+                detailedViewModel.locationsDetailed = locations
+                val action = LocationsListFragmentDirections
+                    .actionLocationsListFragmentToLocationsDetailedFragment(
+                        locations.name
+                    )
 
-        binding.apply {
-            recyclerView.adapter = adapter
+                findNavController().navigate(action)
+            }
+
+            binding.apply {
+                recyclerView.adapter = adapter
+            }
         }
     }
 }

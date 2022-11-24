@@ -1,18 +1,19 @@
-package com.example.branchandatmlocator.model
+package com.example.branchandatmlocator.data
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
-import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.branchandatmlocator.model.Locations
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 @JsonClass(generateAdapter = true)
-@Entity(tableName = "locations_database")
-data class Locations(
-    @PrimaryKey
+data class LocatorDtoContainer(val locations: List<LocatorDto>)
+
+/**
+ * Videos represent a devbyte that can be played.
+ */
+@JsonClass(generateAdapter = true)
+data class LocatorDto(
     @Json(name = "Name")
     val name: String,
 
@@ -36,23 +37,34 @@ data class Locations(
     @Json(name = "yCoordinate")
     val yCoordinate: String,
 
+    @PrimaryKey
     @Json(name = "BankId")
     @ColumnInfo(name = "Bank_ID")
     val bankId: String,
 
     @Json(name = "QRTag")
     @ColumnInfo(name = "QR_Tag")
-    val qrTag: String
-) : Parcelable
+    val qrTag: String)
 
-@JsonClass(generateAdapter = true)
-data class GetLocationByKeyword constructor(
-    @Json(name = "LocationByKeyword")
-    val LocationByKeyword: List<Locations>
-)
 
-fun List<Locations>.asDatabaseModel(): List<Locations> {
-    return map {
+fun LocatorDtoContainer.asDomainModel(): List<Locations> {
+    return locations.map {
+        Locations(
+            name = it.name,
+            type = it.type,
+            address = it.address,
+            phoneNumber = it.phoneNumber,
+            faxNumber = it.faxNumber,
+            xCoordinate = it.xCoordinate,
+            yCoordinate = it.yCoordinate,
+            bankId = it.bankId,
+            qrTag = it.qrTag
+        )
+    }
+}
+
+fun LocatorDtoContainer.asDatabaseModel(): List<Locations> {
+    return locations.map {
         Locations(
             name = it.name,
             type = it.type,
